@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com; connect-src 'self'; form-action 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Dental Tripzo — Premium Dental Tourism Application</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap');
@@ -211,14 +213,14 @@ footer{background:#030A07;padding:40px 0;text-align:center;color:var(--gray600);
         <h2 class="section-title" style="text-align:left">Get Your Free Medical Plan</h2>
         <p style="color:var(--gray600); margin-top:20px">Upload your dental panoramic X-Ray (if available) for our surgeons to review and create a direct pricing offer within 24 hours.</p>
       </div>
-      <form class="contact-form" onsubmit="event.preventDefault(); alert('Application & X-Ray Sent Successfully!');">
-        <div class="form-group"><label>Full Name</label><input type="text" required placeholder="eg. Jan Novak"></div>
-        <div class="form-group"><label>Email Address</label><input type="email" required placeholder="name@domain.com"></div>
+      <form class="contact-form" onsubmit="submitApplication(event)">
+        <div class="form-group"><label for="input-name">Full Name</label><input id="input-name" name="name" type="text" required maxlength="100" autocomplete="name" placeholder="eg. Jan Novak"></div>
+        <div class="form-group"><label for="input-email">Email Address</label><input id="input-email" name="email" type="email" required maxlength="254" autocomplete="email" placeholder="name@domain.com"></div>
         <div class="form-group">
-          <label>Upload Dental X-Ray / Grafi (Optional)</label>
+          <label for="file-input">Upload Dental X-Ray / Grafi (Optional)</label>
           <div class="file-upload" onclick="document.getElementById('file-input').click()">
-            <span style="color:var(--sea)">📁 Click to upload or drag X-Ray image</span>
-            <input type="file" id="file-input" style="display:none" onchange="this.parentNode.querySelector('span').innerText = this.files[0].name">
+            <span id="file-label" style="color:var(--sea)">📁 Click to upload or drag X-Ray image</span>
+            <input type="file" id="file-input" name="xray" accept="image/jpeg,image/png,image/webp,application/pdf" style="display:none" onchange="handleFileSelect(this)">
           </div>
         </div>
         <button type="submit" class="btn btn-gold" style="width:100%">Submit Secure Application</button>
@@ -233,7 +235,10 @@ footer{background:#030A07;padding:40px 0;text-align:center;color:var(--gray600);
 
 <script>
 // Lang logic + Dynamic flight data
+const SUPPORTED_LANGS = ['en', 'cs', 'sk'];
+
 function setLang(lang) {
+  if (!SUPPORTED_LANGS.includes(lang)) return;
   document.body.className = 'lang-' + lang;
   document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.classList.remove('active');
@@ -277,6 +282,41 @@ function updateCalc() {
   document.getElementById('res-home').innerText = '€' + homeTotal.toLocaleString();
   document.getElementById('res-albania').innerText = '€' + albaniaTotal.toLocaleString();
   document.getElementById('res-savings').innerText = '€' + netSavings.toLocaleString();
+}
+
+// X-Ray upload validation
+const ALLOWED_UPLOAD_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
+const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+
+function handleFileSelect(input) {
+  const label = document.getElementById('file-label');
+  const file = input.files && input.files[0];
+
+  if (!file) {
+    label.textContent = '📁 Click to upload or drag X-Ray image';
+    return;
+  }
+  if (!ALLOWED_UPLOAD_TYPES.includes(file.type)) {
+    input.value = '';
+    label.textContent = '⚠ Unsupported file type. Use JPEG, PNG, WebP or PDF.';
+    return;
+  }
+  if (file.size > MAX_UPLOAD_BYTES) {
+    input.value = '';
+    label.textContent = '⚠ File is larger than 10 MB. Please upload a smaller scan.';
+    return;
+  }
+  label.textContent = file.name;
+}
+
+function submitApplication(event) {
+  event.preventDefault();
+  const file = document.getElementById('file-input').files[0];
+  if (file && (!ALLOWED_UPLOAD_TYPES.includes(file.type) || file.size > MAX_UPLOAD_BYTES)) {
+    alert('Please attach a valid X-Ray file (JPEG, PNG, WebP or PDF, max 10 MB).');
+    return;
+  }
+  alert('Application & X-Ray Sent Successfully!');
 }
 
 // Init calculator on load
