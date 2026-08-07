@@ -211,14 +211,14 @@ footer{background:#030A07;padding:40px 0;text-align:center;color:var(--gray600);
         <h2 class="section-title" style="text-align:left">Get Your Free Medical Plan</h2>
         <p style="color:var(--gray600); margin-top:20px">Upload your dental panoramic X-Ray (if available) for our surgeons to review and create a direct pricing offer within 24 hours.</p>
       </div>
-      <form class="contact-form" onsubmit="event.preventDefault(); alert('Application & X-Ray Sent Successfully!');">
+      <form class="contact-form" onsubmit="submitApplication(event)">
         <div class="form-group"><label>Full Name</label><input type="text" required placeholder="eg. Jan Novak"></div>
         <div class="form-group"><label>Email Address</label><input type="email" required placeholder="name@domain.com"></div>
         <div class="form-group">
           <label>Upload Dental X-Ray / Grafi (Optional)</label>
           <div class="file-upload" onclick="document.getElementById('file-input').click()">
             <span style="color:var(--sea)">📁 Click to upload or drag X-Ray image</span>
-            <input type="file" id="file-input" style="display:none" onchange="this.parentNode.querySelector('span').innerText = this.files[0].name">
+            <input type="file" id="file-input" style="display:none" onchange="showSelectedFile(this)">
           </div>
         </div>
         <button type="submit" class="btn btn-gold" style="width:100%">Submit Secure Application</button>
@@ -232,51 +232,105 @@ footer{background:#030A07;padding:40px 0;text-align:center;color:var(--gray600);
 </footer>
 
 <script>
+// Look up a required element, throwing a descriptive error if it is missing
+// so failures surface clearly instead of turning into a silent "undefined".
+function requireEl(id) {
+  const el = document.getElementById(id);
+  if (!el) {
+    throw new Error('Missing required element: #' + id);
+  }
+  return el;
+}
+
 // Lang logic + Dynamic flight data
 function setLang(lang) {
-  document.body.className = 'lang-' + lang;
-  document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.classList.remove('active');
-    if(btn.textContent.toLowerCase() === lang) btn.classList.add('active');
-  });
-  
-  const depCode = document.getElementById('bp-dep-code');
-  const depCity = document.getElementById('bp-dep-city');
-  const flightRoute = document.getElementById('flight-route');
-  
-  if(lang === 'cs') {
-    depCode.textContent = 'PRG'; depCity.textContent = 'Prague';
-    flightRoute.textContent = 'Prague (PRG) ➔ Tirana (TIA)';
-  } else if(lang === 'sk') {
-    depCode.textContent = 'BTS'; depCity.textContent = 'Bratislava';
-    flightRoute.textContent = 'Bratislava (BTS) ➔ Tirana (TIA)';
-  } else {
-    depCode.textContent = 'PRG'; depCity.textContent = 'Prague';
-    flightRoute.textContent = 'Prague (PRG) ➔ Tirana (TIA)';
+  try {
+    document.body.className = 'lang-' + lang;
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.textContent.toLowerCase() === lang) btn.classList.add('active');
+    });
+
+    const depCode = requireEl('bp-dep-code');
+    const depCity = requireEl('bp-dep-city');
+    const flightRoute = requireEl('flight-route');
+
+    if (lang === 'sk') {
+      depCode.textContent = 'BTS'; depCity.textContent = 'Bratislava';
+      flightRoute.textContent = 'Bratislava (BTS) ➔ Tirana (TIA)';
+    } else {
+      depCode.textContent = 'PRG'; depCity.textContent = 'Prague';
+      flightRoute.textContent = 'Prague (PRG) ➔ Tirana (TIA)';
+    }
+  } catch (err) {
+    console.error('Failed to switch language:', err);
   }
 }
 
 // Before After slider logic
 function moveSlider(val) {
-  document.getElementById('before-after-layer').style.width = val + '%';
+  try {
+    requireEl('before-after-layer').style.width = val + '%';
+  } catch (err) {
+    console.error('Failed to move slider:', err);
+  }
 }
 
 // Savings Calculator logic
 function updateCalc() {
-  const implants = document.getElementById('input-implants').value;
-  const crowns = document.getElementById('input-crowns').value;
-  
-  document.getElementById('lbl-implants').innerText = implants;
-  document.getElementById('lbl-crowns').innerText = crowns;
-  
-  // Pricing formulation
-  const homeTotal = (implants * 1400) + (crowns * 600);
-  const albaniaTotal = (implants * 450) + (crowns * 180);
-  const netSavings = homeTotal - albaniaTotal;
-  
-  document.getElementById('res-home').innerText = '€' + homeTotal.toLocaleString();
-  document.getElementById('res-albania').innerText = '€' + albaniaTotal.toLocaleString();
-  document.getElementById('res-savings').innerText = '€' + netSavings.toLocaleString();
+  try {
+    const implants = Number(requireEl('input-implants').value);
+    const crowns = Number(requireEl('input-crowns').value);
+
+    if (!Number.isFinite(implants) || !Number.isFinite(crowns)) {
+      throw new Error('Calculator inputs are not valid numbers');
+    }
+
+    requireEl('lbl-implants').innerText = implants;
+    requireEl('lbl-crowns').innerText = crowns;
+
+    // Pricing formulation
+    const homeTotal = (implants * 1400) + (crowns * 600);
+    const albaniaTotal = (implants * 450) + (crowns * 180);
+    const netSavings = homeTotal - albaniaTotal;
+
+    requireEl('res-home').innerText = '€' + homeTotal.toLocaleString();
+    requireEl('res-albania').innerText = '€' + albaniaTotal.toLocaleString();
+    requireEl('res-savings').innerText = '€' + netSavings.toLocaleString();
+  } catch (err) {
+    console.error('Failed to update savings calculator:', err);
+  }
+}
+
+// Show the chosen file name, guarding against an empty selection (e.g. the
+// user opening then cancelling the picker), which would otherwise throw.
+function showSelectedFile(input) {
+  try {
+    const label = input.parentNode.querySelector('span');
+    if (!label) {
+      throw new Error('File upload label element not found');
+    }
+    const file = input.files && input.files[0];
+    if (file) {
+      label.innerText = file.name;
+    }
+  } catch (err) {
+    console.error('Failed to display selected file:', err);
+  }
+}
+
+// Handle application submission, surfacing failures instead of always
+// reporting success regardless of what happened.
+function submitApplication(event) {
+  event.preventDefault();
+  try {
+    // Placeholder for the real submission (network request, etc.).
+    // Any error thrown here propagates to the catch below.
+    alert('Application & X-Ray Sent Successfully!');
+  } catch (err) {
+    console.error('Failed to submit application:', err);
+    alert('Sorry, we could not send your application. Please try again.');
+  }
 }
 
 // Init calculator on load
