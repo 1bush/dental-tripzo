@@ -57,6 +57,14 @@ nav .container{display:flex;align-items:center;justify-content:space-between;wid
 .lang-btn{padding:7px 13px;border-radius:100px;border:none;cursor:pointer;font-size:.78rem;font-weight:700;background:transparent;color:var(--muted);font-family:var(--ff-body)}
 .lang-btn.active{background:var(--teal-deep);color:#fff;box-shadow:0 6px 14px -6px rgba(8,76,74,.6)}
 /* HERO — editorial split, light */
+/* HERO BRAND LOCKUP — prominent logo above the headline */
+.hero-brand{display:flex;align-items:center;gap:18px;margin-bottom:22px}
+.hero-brand .mark{width:96px;height:58px;display:inline-flex;flex-shrink:0;animation:brandFloat 6s ease-in-out infinite}
+.hero-brand .mark svg{width:96px;height:58px;display:block}
+.hero-brand .wm{font-family:var(--ff-display);font-weight:900;font-size:2.4rem;letter-spacing:-.02em;color:var(--navy);line-height:1}
+.hero-brand .wm em{font-style:normal;background:linear-gradient(120deg,var(--teal),var(--teal-deep));-webkit-background-clip:text;background-clip:text;color:transparent}
+@keyframes brandFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@media(prefers-reduced-motion:reduce){.hero-brand .mark{animation:none}}
 .hero{min-height:100dvh;display:flex;align-items:center;padding:150px 0 70px;position:relative}
 .hero .container{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center}
 .hero h1{font-size:clamp(2.6rem,5.5vw,4.2rem);line-height:1.04;margin:20px 0 22px;font-family:var(--ff-display);font-weight:700;letter-spacing:-.02em;color:var(--ink)}
@@ -205,8 +213,8 @@ footer .tagline{color:rgba(255,255,255,.62);font-size:.72rem;letter-spacing:.24e
 .js .reveal.in{opacity:1;transform:none;filter:none}
 @media(prefers-reduced-motion:reduce){.js .reveal{opacity:1;transform:none;filter:none;transition:none}}
 .reveal-d1{transition-delay:.08s}.reveal-d2{transition-delay:.16s}.reveal-d3{transition-delay:.24s}.reveal-d4{transition-delay:.32s}.reveal-d5{transition-delay:.4s}
-@media(max-width:992px){.hero .container,.calc-box,.contact-wrapper{grid-template-columns:1fr;text-align:center}.hero-desc{margin-left:auto;margin-right:auto}.hero-ctas,.hero-stats{justify-content:center}.timeline,.pkg-grid,.rev-grid{grid-template-columns:1fr 1fr}.nav-links{display:none}.bento{grid-template-columns:1fr}.bento>.card{grid-column:span 1 !important}}
-@media(max-width:640px){.timeline,.pkg-grid,.rev-grid{grid-template-columns:1fr}.section-pad{padding:72px 0}.calc-box{padding:32px 24px}.nav-cta .btn-ghost{display:none}.nav-logo{gap:10px}.nav-logo .mark{width:62px;height:38px}.nav-logo .mark svg{width:62px;height:38px}.nav-logo .wm{font-size:1.6rem}.navwrap{top:10px;padding:0 10px}nav{padding:10px 10px 10px 16px}}
+@media(max-width:992px){.hero .container,.calc-box,.contact-wrapper{grid-template-columns:1fr;text-align:center}.hero-desc{margin-left:auto;margin-right:auto}.hero-ctas,.hero-stats{justify-content:center}.hero-brand{justify-content:center}.timeline,.pkg-grid,.rev-grid{grid-template-columns:1fr 1fr}.nav-links{display:none}.bento{grid-template-columns:1fr}.bento>.card{grid-column:span 1 !important}}
+@media(max-width:640px){.timeline,.pkg-grid,.rev-grid{grid-template-columns:1fr}.section-pad{padding:72px 0}.calc-box{padding:32px 24px}.nav-cta .btn-ghost{display:none}.nav-logo{gap:10px}.nav-logo .mark{width:62px;height:38px}.nav-logo .mark svg{width:62px;height:38px}.nav-logo .wm{font-size:1.6rem}.navwrap{top:10px;padding:0 10px}nav{padding:10px 10px 10px 16px}.hero-brand{gap:12px;margin-bottom:16px}.hero-brand .mark{width:72px;height:44px}.hero-brand .mark svg{width:72px;height:44px}.hero-brand .wm{font-size:1.8rem}}
 [data-lang]{display:none} [data-lang="en"]{display:block}
 .lang-pl [data-lang]{display:none} .lang-pl [data-lang="pl"]{display:block}
 .lang-cs [data-lang]{display:none} .lang-cs [data-lang="cs"]{display:block}
@@ -237,6 +245,7 @@ footer .tagline{color:rgba(255,255,255,.62);font-size:.72rem;letter-spacing:.24e
 <section class="hero">
   <div class="container">
     <div class="hero-text reveal in">
+      <div class="hero-brand"><span class="mark"><svg viewBox="0 0 72 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="tzgh" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#38C2D6"/><stop offset="1" stop-color="#12A0B4"/></linearGradient></defs><path d="M21 21 Q36 5 46 19" stroke="#16294C" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 4"/><path d="M30.5 6.5c.5 0 .9.4.9.9v.6l5.4 3.2c.3.2.3.6 0 .8l-4.6.7-2.2 3.4c-.2.3-.7.3-.9 0l-2.2-3.4-4.6-.7c-.4-.1-.4-.6 0-.8l5.4-3.2V7.4c0-.5.4-.9.9-.9z" fill="#16294C"/><path d="M16 6a6.5 6.5 0 0 1 6.5 6.5C22.5 18.5 16 27 16 27S9.5 18.5 9.5 12.5A6.5 6.5 0 0 1 16 6z" fill="url(#tzgh)"/><circle cx="16" cy="12.5" r="2.4" fill="#fff"/><path d="M50 13c-3 0-4.8 1-5.9 3-1.6 3-3 8-2.6 13 .2 3 1.4 5 2.6 5 1.4 0 1.8-2 2.4-5 .6-3 1.2-4.2 1.6-4.2s1 1.2 1.6 4.2c.6 3 1 5 2.4 5 1.2 0 2.4-2 2.6-5 .4-5-1-10-2.6-13-1.1-2-2.9-3-5.9-3z" fill="url(#tzgh)"/><path d="M62 8l1 2.6 2.6 1-2.6 1-1 2.6-1-2.6-2.6-1 2.6-1z" fill="#16294C"/><path d="M57.5 15l.7 1.7 1.7.7-1.7.7-.7 1.7-.7-1.7-1.7-.7 1.7-.7z" fill="#16294C"/></svg></span><span class="wm">TRIPZ<em>O</em></span></div>
       <span class="hero-pill"><span class="dot"></span> Premium Healthcare Tourism · Tirana</span>
       <h1 data-lang="en">Your New Smile.<br><em>Half the Price.</em></h1>
       <h1 data-lang="pl">Twój nowy uśmiech.<br><em>Za połowę ceny.</em></h1>
