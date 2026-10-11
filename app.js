@@ -211,8 +211,18 @@ document.addEventListener('DOMContentLoaded', function () {
   // Default language
   setLang('en');
 
-  // Scroll-reveal — IntersectionObserver (GPU-safe, no scroll listener)
+  // Scroll-reveal — IntersectionObserver (GPU-safe, no scroll listener).
+  // threshold:0 + small bottom margin so even very tall sections reveal as
+  // soon as their top edge enters the viewport. A safety-net timer guards
+  // against the observer ever missing a callback (race / odd engines).
   const revealEls = document.querySelectorAll('.reveal');
+  const revealInView = () => {
+    const h = window.innerHeight || 800;
+    revealEls.forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.top < h - 40 && r.bottom > 0) el.classList.add('in');
+    });
+  };
   if ('IntersectionObserver' in window && revealEls.length) {
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -221,8 +231,9 @@ document.addEventListener('DOMContentLoaded', function () {
           io.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.14, rootMargin: '0px 0px -40px 0px' });
+    }, { threshold: 0, rootMargin: '0px 0px -40px 0px' });
     revealEls.forEach((el) => io.observe(el));
+    setTimeout(revealInView, 1200);
   } else {
     revealEls.forEach((el) => el.classList.add('in'));
   }
