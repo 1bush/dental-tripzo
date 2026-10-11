@@ -55,7 +55,10 @@ function setLang(lang, updateButtons) {
 
 function moveSlider(val) {
   const layer = $('before-after-layer');
-  if (layer) layer.style.width = Math.min(100, Math.max(0, Number(val))) + '%';
+  const handle = $('slider-handle');
+  const pct = Math.min(100, Math.max(0, Number(val)));
+  if (layer) layer.style.width = pct + '%';
+  if (handle) handle.style.left = pct + '%';
 }
 
 /* ---------- savings calculator ------------------------------------------ */
@@ -91,7 +94,7 @@ function setFileStatus(message, isError) {
   if (label) label.textContent = message || '\u{1F4C1} Click to upload or drag X-Ray image';
   if (status) {
     status.textContent = message || '';
-    status.style.color = isError ? 'var(--coral)' : 'var(--sea)';
+    status.style.color = isError ? '#D92D20' : 'var(--teal-deep)';
   }
 }
 
@@ -148,7 +151,7 @@ function handleFormSubmit(event) {
   // are transmitted (and then stored) only after the patient's GDPR consent.
   // Never send sensitive medical data over plain HTTP.
   setTimeout(() => {
-    wait.style.color = 'var(--sea)';
+    wait.style.color = 'var(--teal-deep)';
     wait.textContent = 'Application & X-Ray sent securely. Our team will reply within 24 hours.';
     form.reset();
   }, 600);
@@ -186,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const dropZone = $('file-upload');
     if (dropZone) {
       dropZone.addEventListener('click', () => fileInput.click());
-      dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.borderColor = 'var(--sea)'; });
+      dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.borderColor = 'var(--teal)'; });
       dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = ''; });
       dropZone.addEventListener('drop', (e) => {
         e.preventDefault();
@@ -207,4 +210,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Default language
   setLang('en');
+
+  // Scroll-reveal — IntersectionObserver (GPU-safe, no scroll listener)
+  const revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && revealEls.length) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.14, rootMargin: '0px 0px -40px 0px' });
+    revealEls.forEach((el) => io.observe(el));
+  } else {
+    revealEls.forEach((el) => el.classList.add('in'));
+  }
+
+  // Nav shadow on scroll (class toggle only — cheap, no layout thrash)
+  const nav = $('topnav');
+  if (nav) {
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        nav.classList.toggle('scrolled', window.scrollY > 10);
+        ticking = false;
+      });
+    }, { passive: true });
+  }
 });
