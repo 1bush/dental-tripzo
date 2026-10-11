@@ -57,7 +57,7 @@ function moveSlider(val) {
   const layer = $('before-after-layer');
   const handle = $('slider-handle');
   const pct = Math.min(100, Math.max(0, Number(val)));
-  if (layer) layer.style.width = pct + '%';
+  if (layer) layer.style.clipPath = 'inset(0 ' + (100 - pct) + '% 0 0)';
   if (handle) handle.style.left = pct + '%';
 }
 

@@ -1,4 +1,4 @@
-# Dental Tripzo
+﻿# Dental Tripzo
 
 Premium dental tourism landing page — saves 50–70% on veneers, All-on-4 and
 Straumann implants in Tirana, Albania.
@@ -56,3 +56,14 @@ Based on OWASP guidance (Top 10 / XSS / Unrestricted File Upload):
    - honours consent withdrawal and retention/deletion (GDPR).
 4. Add CSRF token to the form if it becomes a POST endpoint.
 5. Add a Privacy Policy and Terms page (placeholders exist in the footer).
+## Image credits
+
+Real photography lives in `assets/` (Unsplash License — free for commercial use; credited anyway):
+
+| File         | Used for                        |
+|--------------|---------------------------------|
+| `clinic.jpg` | Contact panel backdrop          |
+| `xray.jpg`   | Slider left / 3D-scan state     |
+| `smile.jpg`  | Slider right + `og:image`       |
+
+> Note: the slider pairs a 3D scan with a real smile, not a matched patient transformation — swap in consented before/after patient photos when available. Replace stock with your own clinic imagery before going live.
